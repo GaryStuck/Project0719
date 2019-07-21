@@ -3,18 +3,20 @@
  * **/
 
 import React, { Component } from 'react'
-import { Button, message } from 'antd';
-// import 'antd/dist/antd.css';
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import Login from './pages/login/login'
+import Admin from './pages/admin/admin'
 
 export default class App extends Component {
-	handleClick= () => {
-		message.info('This is a normal message');
-	}
+
 	render() {
 		return (
-				<div>
-					<Button onClick={this.handleClick} type="primary">Primary</Button>
-				</div>
+				<BrowserRouter>
+					<Switch> {/*switch只能显示一个路由*/}
+						<Route path='/login' component={Login}></Route>
+						<Route path='/' component={Admin}></Route>
+					</Switch>
+				</BrowserRouter>
 		);
 	}
 }
