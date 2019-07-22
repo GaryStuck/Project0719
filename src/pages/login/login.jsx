@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './login.less';
 import logo from './images/logo.png'
 import { Form, Icon, Input, Button, Spin } from 'antd';
+// import { axios } from 'axios';
 
 /*@Item:不能写在import之前*/
 const Item = Form.Item;
@@ -16,16 +17,40 @@ class Login extends Component {
 			loading: false
 		}
 	}
-/*			let {loading} = this.state;
-				loading = true;
-				this.setState({loading})
 
-				*/
+	/*
+		let {loading} = this.state;
+		loading = true;
+		this.setState({loading})
+	*/
 	handleSubmit = (e) => {
 		e.preventDefault();
-		const form = this.props.form;
-		const val = form.getFieldsValue();
-		console.log(val)
+		// const key = '00d91e8e0cca2b76f515926a36db68f5';
+		this.props.form.validateFields((err, values) => {
+			if (!err) {
+				console.log('Received values of form: ', values);
+			} else {
+				console.log('校验失败')
+			}
+		});
+		// const form = this.props.form;
+		// const val = form.getFieldsValue(); //可以拿到每个输入框的值
+		// console.log(val)
+	}
+	/*
+	* @func:自定义校验密码*/
+	validatePwd = (rule, val, cb) => {
+		if (!val) {
+			cb('密码不能为空,不允许出现空格')
+		} else if (val.length < 4) {
+			cb('密码必须大于四位')
+		} else if (val.length > 20) {
+			cb('密码不许超过20位')
+		} else if (!/^[a-zA-Z0-9]+$/.test(val)) {
+			cb('密码需由大小写数字组成')
+		} else {
+			cb()
+		}
 	}
 
 	render() {
@@ -44,9 +69,14 @@ class Login extends Component {
 					<section className="login-content">
 						<h1 className="login-name">迪诺后台登陆</h1>
 						<Form onSubmit={this.handleSubmit} className="login-form">
-							<Item>
+							<Item hasFeedback>
 								{getFieldDecorator('username', {
-									rules: [{required: true, message: '帐号错误!'}]
+									rules: [
+										{required: true, whitespace: true, message: '此项不能为空!'},
+										{min: 4, message: '必须大于等于 4 位'},
+										{max: 11, message: '必须小于等于 12 位'},
+										{pattern: /^[a-zA-Z0-9]+$/, message: '必须是英文、数字组成'}
+									]
 								})(
 										<Input
 												size={'large'}
@@ -55,9 +85,11 @@ class Login extends Component {
 										/>
 								)}
 							</Item>
-							<Item>
+							<Item hasFeedback>
 								{getFieldDecorator('password', {
-									rules: [{required: true, message: '账号或密码错误!'}]
+									rules: [
+										{validator: this.validatePwd}
+									]
 								})(
 										<Input
 												size={'large'}
