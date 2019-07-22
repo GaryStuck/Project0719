@@ -1,9 +1,14 @@
+/**
+ * @file:登录界面**/
+
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import './login.less';
 import logo from './images/logo.png'
-import { Form, Icon, Input, Button, Spin } from 'antd';
-// import { axios } from 'axios';
-
+import { Form, Icon, Input, Button, Spin, message } from 'antd';
+import { reqLogin } from '../../api';
+import memoryUtils from '../../utils/memoryUtils'
+import storageUtils from '../../utils/storageUtils'
 /*@Item:不能写在import之前*/
 const Item = Form.Item;
 
@@ -18,19 +23,38 @@ class Login extends Component {
 		}
 	}
 
-	/*
+	handleSubmit = (e) => {
+		e.preventDefault();
 		let {loading} = this.state;
 		loading = true;
 		this.setState({loading})
-	*/
-	handleSubmit = (e) => {
-		e.preventDefault();
-		// const key = '00d91e8e0cca2b76f515926a36db68f5';
-		this.props.form.validateFields((err, values) => {
+		this.props.form.validateFields(async (err, values) => {
+			// loading = true;
 			if (!err) {
-				console.log('Received values of form: ', values);
+				const {username, password} = values;
+				let results = await reqLogin(username, password)
+				const result = results.data;
+				setTimeout(() => {
+					if (results.status === 200 && result.status === 0) {
+
+						message.success('登录成功');
+						memoryUtils.user = result.data;
+						// 存储用户名到storage中
+						storageUtils.saveUser(result.data)
+						//跳到管理界面
+						loading = false;
+						this.setState({loading})
+						this.props.history.replace('/');
+					} else {
+						loading = false;
+						this.setState({loading})
+						message.error(result.msg)
+					}
+				}, 1000)
 			} else {
-				console.log('校验失败')
+				loading = false;
+				this.setState({loading})
+				message.error('校验失败')
 			}
 		});
 		// const form = this.props.form;
@@ -54,7 +78,11 @@ class Login extends Component {
 	}
 
 	render() {
-
+		const user = memoryUtils.user;
+		if (user && user._id) {
+			return <Redirect to='/'/>
+		}
+		//得到具强大对象的form
 		const form = this.props.form;
 		const {getFieldDecorator} = form;
 

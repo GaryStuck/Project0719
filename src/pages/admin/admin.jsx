@@ -1,12 +1,20 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom'
+import memoryUtils  from '../../utils/memoryUtils'
 
 class Admin extends Component {
+
 	render() {
-		return (
-				<div>
-					登陆页面
-				</div>
-		);
+		const user = memoryUtils.user;
+		// 未登录跳转到登录界面
+		if (!user._id||!user) {
+			return <Redirect to='/login'/>
+		}
+			return (
+					<div>
+						HELLO {user.username}
+					</div>
+			);
 	}
 }
 
