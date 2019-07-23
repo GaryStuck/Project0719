@@ -13,8 +13,8 @@ export default class App extends Component {
 		return (
 				<BrowserRouter>
 					<Switch> {/*switch只能显示一个路由*/}
-						<Route path='/login' component={Login}></Route>
-						<Route path='/' component={Admin}></Route>
+						<Route path='/login' component={Login}/>
+						<Route path='/' component={Admin}/>
 					</Switch>
 				</BrowserRouter>
 		);

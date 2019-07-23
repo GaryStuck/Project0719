@@ -23,6 +23,25 @@ class Login extends Component {
 		}
 	}
 
+	/**
+	 * {
+    "data": {
+        "admin": false,
+        "chapterTops": [],
+        "collectIds": [],
+        "email": "",
+        "icon": "",
+        "id": 27452,
+        "nickname": "admin1024",
+        "password": "",
+        "token": "",
+        "type": 0,
+        "username": "admin1024"
+    },
+    "errorCode": 0,
+    "errorMsg": ""
+}**/
+
 	handleSubmit = (e) => {
 		e.preventDefault();
 		let {loading} = this.state;
@@ -36,7 +55,6 @@ class Login extends Component {
 				const result = results.data;
 				setTimeout(() => {
 					if (results.status === 200 && result.status === 0) {
-
 						message.success('登录成功');
 						memoryUtils.user = result.data;
 						// 存储用户名到storage中
@@ -96,7 +114,7 @@ class Login extends Component {
 					</header>
 					<section className="login-content">
 						<h1 className="login-name">迪诺后台登陆</h1>
-						<Form onSubmit={this.handleSubmit} className="login-form">
+						<Form onSubmit={this.handleSubmit} className="login-form" autoComplete="off">
 							<Item hasFeedback>
 								{getFieldDecorator('username', {
 									rules: [
