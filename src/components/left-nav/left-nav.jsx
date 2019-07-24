@@ -57,7 +57,7 @@ class LeftNav extends Component {
             ),
         )
       } else {
-        // 查找一个与档期请求路径匹配的子Item
+        // 查找一个与当前请求路径匹配的子Item
         const cItem = item.children.find(cItem => cItem.key === path)
         if (cItem) {
           this.openKey = item.key
