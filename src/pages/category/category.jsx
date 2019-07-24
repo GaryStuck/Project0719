@@ -21,20 +21,36 @@ class Category extends Component {
     })
   }
 
-  //@显示:添加弹出框
+  //@显示:增加分类
   showAddCategories = () => {
     this.setState({
       showStatus: 1,
     })
   }
 
-  //@添加分类框
+  //@添加分类
   addCategory = () => {
-
-    //隐藏分类框
-    this.setState({
-      showStatus: 0,
-    })
+   this.form.validateFields(async(err,val) => {
+     if (!err) {
+       //隐藏分类框
+       this.setState({
+         showStatus: 0,
+       })
+       //取到子组件传入的值
+       const {parentId, categoryName} = this.form.getFieldsValue()
+       this.form.resetFields()
+       //收集信息，调用接口添加分类
+       const results = await reqAddCategories(parentId, categoryName)
+       if (results.data.status === 0) {
+         //更新列表
+         if (parentId === this.state.parentId) {
+           this.getCategories()
+         } else if (parentId === '0') {
+           this.getCategories('0')
+         }
+       }
+     }
+   })
   }
 
   //显示更新数据框
@@ -46,21 +62,27 @@ class Category extends Component {
   }
 
   //更新分类
-  updateCategory = async () => {
-    //  1.隐藏分类框2.输入的名称要符合要求
-    this.setState({
-      showStatus: 0,
+  updateCategory = () => {
+    //进行表单验证，通过才处理
+    this.form.validateFields(async (err, val) => {
+      if (!err) {
+        //  1.隐藏分类框2.输入的名称要符合要求
+        this.setState({
+          showStatus: 0,
+        })
+        //2.发请求更新数据框,调用接口
+        const categoryId = this.categories._id
+        const categoryName = this.form.getFieldValue('categoryName')
+        //清空输入数据
+        this.form.resetFields()
+        const results = await reqUpdateCategories({categoryId, categoryName})
+        if (results.data.status === 0) {
+          //3.重新显示数据
+          this.getCategories()
+        }
+      }
     })
-    //2.发请求更新数据框,调用接口
-    const categoryId = this.categories._id;
-    const categoryName = this.form.getFieldValue('categoryName');
-    //清空输入数据
-    this.form.resetFields()
-    const results = await reqUpdateCategories({categoryId, categoryName})
-    if (results.data.status===0) {
-      //3.重新显示数据
-      this.getCategories();
-    }
+
   }
 
   //显示指定分类列表的二级列表
@@ -70,42 +92,41 @@ class Category extends Component {
       parentId: categories._id,
       parentName: categories.name,
     }, () => {
-      console.log(this.state.parentId)
+      console.log('parentId', this.state.parentId) // '0'
       //获取二级分类列表
       this.getCategories()
     })
-
   }
 
   //显示一级分类列表
   showCategories = () => {
     this.setState({
       parentId: '0',
+      parentName: '',
       subCategories: [],
     })
   }
 
   /**@getCategories:一级分类列表**/
-  getCategories = async () => {
-    const {parentId} = this.state
+  getCategories = async (parentId) => {
+    parentId = parentId || this.state.parentId
     this.setState({loading: true})
-    const {data: {data, status}} = await reqCategories(parentId)
-    if (status === 0 && data) {
+    const results = await reqCategories(parentId)
+    this.setState({loading: false})
+    if (results.data.status === 0) {
       // 取出分类数组，可能一级或者二级
+      const categories = results.data.data
       //更新状态
       if (parentId === '0') {
         this.setState({
-          categories: data,
-          loading: false,
+          categories,
         })
       } else {
         this.setState({
-          subCategories: data,
-          loading: false,
+          subCategories: categories,
         })
       }
     } else {
-      this.setState({loading: false})
       message.error('获取列表失败')
     }
   }
@@ -195,7 +216,13 @@ class Category extends Component {
                 onOk={this.addCategory}
                 onCancel={this.handleCancel}
             >
-              <AddForm/>
+              <AddForm
+                  categories={categories}
+                  parentId={parentId}
+                  setForm={form => {
+                    this.form = form
+                  }}
+              />
             </Modal>
             <Modal
                 title="修改内容"
@@ -205,7 +232,9 @@ class Category extends Component {
             >
               <UpdateForms
                   categoryName={category.name}
-                  setForm = {(form) => {this.form = form}}
+                  setForm={(form) => {
+                    this.form = form
+                  }}
               />
             </Modal>
           </Card>

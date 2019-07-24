@@ -25,11 +25,14 @@ class UpdateForm extends Component {
             {
               getFieldDecorator('categoryName', {
                 initialValue: categoryName,
+                rules: [
+                  {required:true,message:'类名不能为空'}
+                ]
               })(
                   <Input
                       prefix={<Icon type="form"
                                     style={{color: 'rgba(0,0,0,.25)'}}/>}
-                      autoComplete="false" placeholder="请输入分类名称"/>,
+                       placeholder="请输入分类名称"/>,
               )
             }
           </Item>
