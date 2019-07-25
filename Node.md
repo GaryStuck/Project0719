@@ -88,3 +88,23 @@ HA201pAU6bJSZINyHDUTB+Beo28rRXSwSh3OUIvYwKNVeoBY+KwOJ7WnuTCUq1meE6GkKc4D/cXmgpOy
 i/zprZ0zf3qH5mkphtg6ksjKgKjmx1cXfZAAX6wcDBNaCL+Ortep1Dh8xDUbqbBVNBL4jbiL3i3xsfNiyJgaZ5sX7i8t
 mStEpLbPwvHcByuf59qJhV/bZOl8KqJBETCDJcY6O2aqhTUy+9x93ThKs1GKrRPePrWPluud7ttlgtRveit/pcBrnQcXO
 l1rHq7ByB8CFAxNotRUYL9IF5n3wJOgkPojMy6jetQA5Ogc8Sm7RG6vg1yow==
+
+----
+
+### 分页列表
+
++ 1.纯前台分页
+   - 请求获取数据：一次获取所有数据，翻页时不需要发请求
+   - 请求接口:
+        不需要指定：页码（pageNum）和每页数量(pageSize)
+        相应数据：所有数据的数组
+        
++ 2.基于后台的分页
+   - 请求获取数据：每次只获取当前页的数据，翻页时需要重新发请求
+   - 请求接口:
+        需要指定参数:页码(pageNum)和每页数量(pageSize)
+        相应数据：当前页数据的数组 + 总记录数（total）
+        
++ 3.如何选择？
+
+    - 根据数据的多少来选择

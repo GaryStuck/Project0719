@@ -39,3 +39,21 @@ export const reqAddCategories = (parentId, categoryName) => ajax(
 //更新分类
 export const reqUpdateCategories = ({categoryId, categoryName}) => ajax(
     BASE + '/manage/category/update', {categoryId, categoryName}, 'POST')
+//根据ID获取分类
+export const reqGetCategory = (categoryId) => ajax(
+    BASE + '/manage/category/info', {categoryId})
+//获取商品分页列表
+export const reqGetList = (pageNum, pageSize) => ajax(
+    BASE + '/manage/product/list', {pageNum, pageSize})
+//搜索商品分页列表searchType:类型:
+// productName根据商品名称搜索/productDesc根据商品描述搜索
+export const reqSearchProducts = ({pageNum, pageSize, searchName, searchType}) => ajax(
+    BASE + '/manage/product/search',
+    {
+      pageNum,
+      pageSize,
+      [searchType]: searchName,
+    })
+//更新商品状态
+export const reqUpdateStatus = (productId, status) => ajax(
+    BASE + '/manage/product/updateStatus', {productId, status},'POST')

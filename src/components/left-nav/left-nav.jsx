@@ -114,7 +114,7 @@ class LeftNav extends Component {
 
 /**
  * @param:{
- *   widthRouter:高阶组件，包装非路由组件，返回一个新组件
+ *   withRouter:高阶组件，包装非路由组件，返回一个新组件
  *   新的组件向非路由组件传递是那个属性：
  *   history/location/match
  * }**/
