@@ -12,7 +12,7 @@ export default class App extends Component {
 	render() {
 		return (
 				<BrowserRouter>
-					<Switch> {/*switch只能显示一个路由*/}
+					<Switch> {/*switch一次只能显示一个路由*/}
 						<Route path='/login' component={Login}/>
 						<Route path='/' component={Admin}/>
 					</Switch>

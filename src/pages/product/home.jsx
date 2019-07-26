@@ -80,7 +80,9 @@ class ProductHome extends Component {
                     onClick={() => this.props.history.push('/product/detail',
                         {product})}
                     type={'link'}>详情</Button>
-                <Button type={'link'}>修改</Button>
+                <Button
+                    onClick={() => this.props.history.push('/product/addupdate')}
+                    type={'link'}>修改</Button>
               </span>
           )
         },
@@ -128,7 +130,9 @@ class ProductHome extends Component {
         </span>
     )
     const extra = (
-        <Button type='primary'>
+        <Button type='primary'
+          onClick={() => this.props.history.push('/product/addupdate')}
+        >
           <Icon type='plus'/>添加商品
         </Button>
     )
