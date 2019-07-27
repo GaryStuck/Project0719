@@ -29,7 +29,7 @@ class ProductHome extends Component {
       results = await reqGetList(pageNum, PAGE_SIZE)
     }
     const data = results.data
-    console.log(data)
+    // console.log(data)
     if (data.status === 0) {
       this.setState({
         products: data.data.list,
@@ -81,7 +81,7 @@ class ProductHome extends Component {
                         {product})}
                     type={'link'}>详情</Button>
                 <Button
-                    onClick={() => this.props.history.push('/product/addupdate')}
+                    onClick={() => this.props.history.push('/product/addupdate',product)}
                     type={'link'}>修改</Button>
               </span>
           )
