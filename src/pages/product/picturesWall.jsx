@@ -21,10 +21,15 @@ class PicturesWall extends Component {
   static propTypes = {
     imgs: PropTypes.array,
   }
+  state = {
+    previewVisible: false,
+    previewImage: '',//大图URL
+    fileList: [],//图片数组
+  }
 
   constructor(props) {
     super(props)
-    this.pw = React.createRef()
+    // this.pw = React.createRef()
     let fileList = []
     //传入的图片
     const {imgs} = this.props
@@ -45,11 +50,6 @@ class PicturesWall extends Component {
     }
 
   }
-  // state = {
-  //   previewVisible: false,
-  //   previewImage: '',//大图URL
-  //   fileList: [],//图片数组
-  // }
 
   handleCancel = () => this.setState({previewVisible: false})
 
@@ -93,7 +93,7 @@ class PicturesWall extends Component {
   }
   /*获取所有已上传的文件名的数组*/
   getImgs = () => {
-    return this.state.fileList
+    return this.state.fileList.map(file => file.name)
   }
 
   render() {

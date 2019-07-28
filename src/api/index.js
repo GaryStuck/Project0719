@@ -56,6 +56,14 @@ export const reqSearchProducts = ({pageNum, pageSize, searchName, searchType}) =
     })
 //更新商品状态
 export const reqUpdateStatus = (productId, status) => ajax(
-    BASE + '/manage/product/updateStatus', {productId, status},'POST')
-//上传图片接口
-export const reqDeleteImg = (name) => ajax(BASE+'/manage/img/delete',{name},'POST')
+    BASE + '/manage/product/updateStatus', {productId, status}, 'POST')
+//删除图片接口
+export const reqDeleteImg = (name) => ajax(BASE + '/manage/img/delete', {name},
+    'POST')
+//更新、添加=》商品信息
+export const reqAddProduct = (product) => ajax(
+    BASE + '/manage/product/' + (product._id ? 'update' : 'add'),
+    product, 'POST')
+/*
+export const reqUpdateProduct = (product) => ajax(
+    BASE + '/manage/product/update', product, 'POST')*/

@@ -5,12 +5,12 @@ import {
   Form,
   Input,
   Cascader,
-  Button,
-  Upload,
-  message,
+  Button, message,
 } from 'antd'
-import { reqCategories } from '../../api'
+import { reqCategories,reqAddProduct } from '../../api'
 import PicturesWall from './picturesWall'
+import RichTextEdit from './rich-text-edit'
+
 
 const {Item} = Form
 const {TextArea} = Input
@@ -125,12 +125,40 @@ class ProductAddUpdate extends PureComponent {
     })
   }
 
-  submit = () => {
+  submit = async () => {
     // 进行表单验证, 如果通过了, 才发送请求
     this.props.form.validateFields(async (error, values) => {
       if (!error) {
+        //1.收集数据，生成product对象
         const imgs =  this.pw.current.getImgs()
-        console.log(values,imgs)
+        const detail = this.editor.current.getDetail();
+        let categoryId,pCategoryId
+        const {categoryIds,name,desc,price} = values;
+        if (categoryIds.length===1) {
+          pCategoryId = '0'
+          categoryId = categoryIds[0]
+        }else {
+          pCategoryId = categoryIds[0]
+          categoryId=categoryIds[1]
+        }
+        const product = {name,desc,price,imgs,detail,categoryId,pCategoryId}
+        //更新添加_id
+        if (this.isUpdate) {
+          product._id = this.product._id
+        }
+        console.log(product)
+        //调用接口，发送函数添加/更新
+        let res = await reqAddProduct(product)
+        //根据结果返回提示
+        if (res.data.status === 0) {
+          message.success(`${this.isUpdate?'更新':'添加'}商品成功`)
+          this.props.history.goBack();
+        }else {
+          message.error(`${this.isUpdate?'更新':'添加'}商品失败`)
+
+        }
+      }else {
+        message.error('添加失败')
       }
     })
   }
@@ -167,8 +195,8 @@ class ProductAddUpdate extends PureComponent {
 
     // 指定Item布局的配置对象
     const formItemLayout = {
-      labelCol: {span: 2},  // 左侧label的宽度
-      wrapperCol: {span: 8}, // 右侧包裹的宽度
+      labelCol: {span: 3},  // 左侧label的宽度
+      wrapperCol: {span: 12}, // 右侧包裹的宽度
     }
 
     // 头部左侧标题
@@ -185,7 +213,7 @@ class ProductAddUpdate extends PureComponent {
 
     return (
         <Card title={title}>
-          <Form {...formItemLayout}>
+          <Form {...formItemLayout} autoComplete="off">
             <Item label="商品名称">
               {
                 getFieldDecorator('name', {
@@ -240,9 +268,10 @@ class ProductAddUpdate extends PureComponent {
             <Item label="商品图片">
               <PicturesWall ref={this.pw} imgs={imgs} />
             </Item>
-            <Item label="商品详情" labelCol={{span: 2}} wrapperCol={{span: 20}}>
+            <Item label="商品详情" labelCol={{span: 3}} wrapperCol={{span:15 }}>
+              <RichTextEdit ref={this.editor} detail={product.detail} />
             </Item>
-            <Item>
+            <Item labelCol={{span:10}} wrapperCol={{span:10}}>
               <Button type='primary' onClick={this.submit}>提交</Button>
             </Item>
           </Form>
