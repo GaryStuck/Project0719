@@ -123,14 +123,14 @@ class Login extends Component {
                     {min: 4, message: '必须大于等于 4 位'},
                     {max: 11, message: '必须小于等于 12 位'},
                     {pattern: /^[a-zA-Z0-9]+$/, message: '必须是英文、数字组成'},
-                  ]
+                  ],
                 })(
                     <Input
                         size={'large'}
                         prefix={<Icon type="user"
                                       style={{color: 'rgba(0,0,0,.25)'}}/>}
                         placeholder="管理员帐号"
-                    />
+                    />,
                 )}
               </Item>
               <Item hasFeedback>

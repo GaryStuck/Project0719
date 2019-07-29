@@ -7,10 +7,9 @@ import {
   Cascader,
   Button, message,
 } from 'antd'
-import { reqCategories,reqAddProduct } from '../../api'
+import { reqCategories, reqAddProduct } from '../../api'
 import PicturesWall from './picturesWall'
 import RichTextEdit from './rich-text-edit'
-
 
 const {Item} = Form
 const {TextArea} = Input
@@ -130,18 +129,26 @@ class ProductAddUpdate extends PureComponent {
     this.props.form.validateFields(async (error, values) => {
       if (!error) {
         //1.收集数据，生成product对象
-        const imgs =  this.pw.current.getImgs()
-        const detail = this.editor.current.getDetail();
-        let categoryId,pCategoryId
-        const {categoryIds,name,desc,price} = values;
-        if (categoryIds.length===1) {
+        const imgs = this.pw.current.getImgs()
+        const detail = this.editor.current.getDetail()
+        let categoryId, pCategoryId
+        const {categoryIds, name, desc, price} = values
+        if (categoryIds.length === 1) {
           pCategoryId = '0'
           categoryId = categoryIds[0]
-        }else {
+        } else {
           pCategoryId = categoryIds[0]
-          categoryId=categoryIds[1]
+          categoryId = categoryIds[1]
         }
-        const product = {name,desc,price,imgs,detail,categoryId,pCategoryId}
+        const product = {
+          name,
+          desc,
+          price,
+          imgs,
+          detail,
+          categoryId,
+          pCategoryId,
+        }
         //更新添加_id
         if (this.isUpdate) {
           product._id = this.product._id
@@ -151,13 +158,13 @@ class ProductAddUpdate extends PureComponent {
         let res = await reqAddProduct(product)
         //根据结果返回提示
         if (res.data.status === 0) {
-          message.success(`${this.isUpdate?'更新':'添加'}商品成功`)
-          this.props.history.goBack();
-        }else {
-          message.error(`${this.isUpdate?'更新':'添加'}商品失败`)
+          message.success(`${this.isUpdate ? '更新' : '添加'}商品成功`)
+          this.props.history.goBack()
+        } else {
+          message.error(`${this.isUpdate ? '更新' : '添加'}商品失败`)
 
         }
-      }else {
+      } else {
         message.error('添加失败')
       }
     })
@@ -179,7 +186,7 @@ class ProductAddUpdate extends PureComponent {
   render() {
 
     const {isUpdate, product} = this
-    const {pCategoryId, categoryId,imgs} = product
+    const {pCategoryId, categoryId, imgs} = product
     // 用来接收级联分类ID的数组
     const categoryIds = []
     if (isUpdate) {
@@ -201,7 +208,7 @@ class ProductAddUpdate extends PureComponent {
 
     // 头部左侧标题
     const title = (
-        <span>
+      <span>
         <Button type={'link'} onClick={() => this.props.history.goBack()}>
           <Icon type='arrow-left' style={{fontSize: 20}}/>
         </Button>
@@ -212,70 +219,70 @@ class ProductAddUpdate extends PureComponent {
     const {getFieldDecorator} = this.props.form
 
     return (
-        <Card title={title}>
-          <Form {...formItemLayout} autoComplete="off">
-            <Item label="商品名称">
-              {
-                getFieldDecorator('name', {
-                  initialValue: product.name,
-                  rules: [
-                    {required: true, message: '必须输入商品名称'},
-                  ],
-                })(<Input placeholder='请输入商品名称'/>)
-              }
-            </Item>
-            <Item label="商品描述">
-              {
-                getFieldDecorator('desc', {
-                  initialValue: product.desc,
-                  rules: [
-                    {required: true, message: '必须输入商品描述'},
-                  ],
-                })(<TextArea placeholder="请输入商品描述"
-                             autosize={{minRows: 2, maxRows: 6}}/>)
-              }
+      <Card title={title}>
+        <Form {...formItemLayout} autoComplete="off">
+          <Item label="商品名称">
+            {
+              getFieldDecorator('name', {
+                initialValue: product.name,
+                rules: [
+                  {required: true, message: '必须输入商品名称'},
+                ],
+              })(<Input placeholder='请输入商品名称'/>)
+            }
+          </Item>
+          <Item label="商品描述">
+            {
+              getFieldDecorator('desc', {
+                initialValue: product.desc,
+                rules: [
+                  {required: true, message: '必须输入商品描述'},
+                ],
+              })(<TextArea placeholder="请输入商品描述"
+                           autosize={{minRows: 2, maxRows: 6}}/>)
+            }
 
-            </Item>
-            <Item label="商品价格">
+          </Item>
+          <Item label="商品价格">
 
-              {
-                getFieldDecorator('price', {
-                  initialValue: product.price,
-                  rules: [
-                    {required: true, message: '必须输入商品价格'},
-                    {validator: this.validatePrice},
-                  ],
-                })(<Input type='number' placeholder='请输入商品价格' addonAfter='元'/>)
-              }
-            </Item>
-            <Item label="商品分类">
-              {
-                getFieldDecorator('categoryIds', {
-                  initialValue: categoryIds,
-                  rules: [
-                    {required: true, message: '必须指定商品分类'},
-                  ],
-                })(
-                    <Cascader
-                        placeholder='请指定商品分类'
-                        options={this.state.options}  /*需要显示的列表数据数组*/
-                        loadData={this.loadData} /*当选择某个列表项, 加载下一级列表的监听回调*/
-                    />,
-                )
-              }
+            {
+              getFieldDecorator('price', {
+                initialValue: product.price,
+                rules: [
+                  {required: true, message: '必须输入商品价格'},
+                  {validator: this.validatePrice},
+                ],
+              })(<Input type='number' placeholder='请输入商品价格' addonAfter='元'/>)
+            }
+          </Item>
+          <Item label="商品分类">
+            {
+              getFieldDecorator('categoryIds', {
+                initialValue: categoryIds,
+                rules: [
+                  {required: true, message: '必须指定商品分类'},
+                ],
+              })(
+                <Cascader
+                  placeholder='请指定商品分类'
+                  options={this.state.options}  /*需要显示的列表数据数组*/
+                  loadData={this.loadData} /*当选择某个列表项, 加载下一级列表的监听回调*/
+                />,
+              )
+            }
 
-            </Item>
-            <Item label="商品图片">
-              <PicturesWall ref={this.pw} imgs={imgs} />
-            </Item>
-            <Item label="商品详情" labelCol={{span: 3}} wrapperCol={{span:15 }}>
-              <RichTextEdit ref={this.editor} detail={product.detail} />
-            </Item>
-            <Item labelCol={{span:10}} wrapperCol={{span:10}}>
-              <Button type='primary' onClick={this.submit}>提交</Button>
-            </Item>
-          </Form>
-        </Card>
+          </Item>
+          <Item label="商品图片">
+            <PicturesWall ref={this.pw} imgs={imgs}/>
+          </Item>
+          <Item label="商品详情" labelCol={{span: 3}} wrapperCol={{span: 15}}>
+            <RichTextEdit ref={this.editor} detail={product.detail}/>
+          </Item>
+          <Item labelCol={{span: 10}} wrapperCol={{span: 10}}>
+            <Button type='primary' onClick={this.submit}>提交</Button>
+          </Item>
+        </Form>
+      </Card>
     )
   }
 }

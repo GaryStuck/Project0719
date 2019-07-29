@@ -11,10 +11,10 @@ const BASE = ''
 
 //登录接口
 export const reqLogin = (username, password) => ajax(BASE + '/login',
-    {username, password}, 'POST')
+  { username, password }, 'POST')
 //添加用户接口
 export const reqAddUser = (user) => ajax(BASE + '/manage/user/add', user,
-    'POST')
+  'POST')
 // reqWeather('北京')
 //jsonp天气接口函数
 export const reqWeather = (city) => {
@@ -22,8 +22,8 @@ export const reqWeather = (city) => {
     const url = `http://api.map.baidu.com/telematics/v3/weather?location=${city}&output=json&ak=3p49MVra6urFRGOT9s8UBWr2`
     jsonp(url, (err, data) => {
       if (!err) {
-        const {dayPictureUrl, weather} = data.results[0].weather_data[0]
-        resolve({dayPictureUrl, weather})
+        const { dayPictureUrl, weather } = data.results[0].weather_data[0]
+        resolve({ dayPictureUrl, weather })
       } else {
         message.error('获取天气信息失败')
       }
@@ -32,38 +32,45 @@ export const reqWeather = (city) => {
 }
 //获取一级二级分类列表
 export const reqCategories = (parentId) => ajax(BASE + '/manage/category/list',
-    {parentId}, 'GET')
+  { parentId }, 'GET')
 //添加分类
 export const reqAddCategories = (parentId, categoryName) => ajax(
-    BASE + '/manage/category/add', {parentId, categoryName}, 'POST')
+  BASE + '/manage/category/add', { parentId, categoryName }, 'POST')
 //更新分类
-export const reqUpdateCategories = ({categoryId, categoryName}) => ajax(
-    BASE + '/manage/category/update', {categoryId, categoryName}, 'POST')
+export const reqUpdateCategories = ({ categoryId, categoryName }) => ajax(
+  BASE + '/manage/category/update', { categoryId, categoryName }, 'POST')
 //根据ID获取分类
 export const reqGetCategory = (categoryId) => ajax(
-    BASE + '/manage/category/info', {categoryId})
+  BASE + '/manage/category/info', { categoryId })
 //获取商品分页列表
 export const reqGetList = (pageNum, pageSize) => ajax(
-    BASE + '/manage/product/list', {pageNum, pageSize})
+  BASE + '/manage/product/list', { pageNum, pageSize })
 //搜索商品分页列表searchType:类型:
 // productName根据商品名称搜索/productDesc根据商品描述搜索
-export const reqSearchProducts = ({pageNum, pageSize, searchName, searchType}) => ajax(
-    BASE + '/manage/product/search',
-    {
-      pageNum,
-      pageSize,
-      [searchType]: searchName,
-    })
+export const reqSearchProducts = ({ pageNum, pageSize, searchName, searchType }) => ajax(
+  BASE + '/manage/product/search',
+  {
+    pageNum,
+    pageSize,
+    [searchType]: searchName,
+  })
 //更新商品状态
 export const reqUpdateStatus = (productId, status) => ajax(
-    BASE + '/manage/product/updateStatus', {productId, status}, 'POST')
+  BASE + '/manage/product/updateStatus', { productId, status }, 'POST')
 //删除图片接口
-export const reqDeleteImg = (name) => ajax(BASE + '/manage/img/delete', {name},
-    'POST')
+export const reqDeleteImg = (name) => ajax(BASE + '/manage/img/delete', { name },
+  'POST')
 //更新、添加=》商品信息
 export const reqAddProduct = (product) => ajax(
-    BASE + '/manage/product/' + (product._id ? 'update' : 'add'),
-    product, 'POST')
+  BASE + '/manage/product/' + (product._id ? 'update' : 'add'),
+  product, 'POST')
 /*
 export const reqUpdateProduct = (product) => ajax(
     BASE + '/manage/product/update', product, 'POST')*/
+//获取角色列表
+export const reqRoles = () => ajax(BASE + '/manage/role/list')
+//添加角色
+export const reqAddRole = (roleName) => ajax(BASE + '/manage/role/add',
+  { roleName }, 'POST')
+//更新角色(给角色设置权限)
+export const reqUpdateRole = (role) => ajax(BASE + '/manage/role/update', role,'POST')
