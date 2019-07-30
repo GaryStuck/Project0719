@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import './index.less'
-
+// import PropTypes from 'prop-types'
 class Home extends Component {
-	render() {
+  // static propTypes = {
+  //   store: PropTypes.object.isRequired
+  // }
+  
+  render() {
 		return (
 				<div>
 					<h1>欢迎来到DUNO快速开发平台</h1>
