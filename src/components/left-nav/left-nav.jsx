@@ -20,7 +20,8 @@ class LeftNav extends Component {
       if (!item.children) {
         return (
           <Menu.Item key={item.key}>
-            <Link to={item.key} onClick={() => this.props.setHeadTitle(item.title)}>
+            <Link to={item.key}
+                  onClick={() => this.props.setHeadTitle(item.title)}>
               <Icon type={item.icon}/>
               <span>{item.title}</span>
             </Link>
@@ -49,10 +50,15 @@ class LeftNav extends Component {
     return menuList.reduce((pre, item) => {
       // 向pre中添加项
       if (!item.children) {
+        /**@redux:更新redux的初始化显示**/
+        if (item.key === path || path.indexOf(item.key) === 0) {
+          this.props.setHeadTitle(item.title)
+        }
         pre.push(
           (
             <Menu.Item key={item.key}>
-              <Link to={item.key} onClick={() => this.props.setHeadTitle(item.title)}>
+              <Link to={item.key}
+                    onClick={() => this.props.setHeadTitle(item.title)}>
                 <Icon type={item.icon}/>
                 <span>{item.title}</span>
               </Link>
@@ -130,6 +136,6 @@ class LeftNav extends Component {
  * }**/
 
 export default connect(
-  state=>({}),
-  {setHeadTitle}
+  state => ({headTitle: state.headTitle}),
+  {setHeadTitle},
 )(withRouter(LeftNav))

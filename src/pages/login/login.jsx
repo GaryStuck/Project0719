@@ -6,9 +6,11 @@ import { Redirect } from 'react-router-dom'
 import './login.less'
 import logo from './images/logo.png'
 import { Form, Icon, Input, Button, Spin, message } from 'antd'
-import { reqLogin } from '../../api'
-import memoryUtils from '../../utils/memoryUtils'
-import storageUtils from '../../utils/storageUtils'
+// import { reqLogin } from '../../api'
+// import memoryUtils from '../../utils/memoryUtils'
+// import storageUtils from '../../utils/storageUtils'
+import { connect } from 'react-redux'
+import { login } from '../../redux/actions'
 /*@Item:不能写在import之前*/
 const Item = Form.Item
 
@@ -22,7 +24,7 @@ class Login extends Component {
       loading: false,
     }
   }
-
+  
   /**
    * {
     "data": {
@@ -41,34 +43,33 @@ class Login extends Component {
     "errorCode": 0,
     "errorMsg": ""
 }**/
-
+  
   handleSubmit = (e) => {
     e.preventDefault()
     let {loading} = this.state
     loading = true
     this.setState({loading})
-    this.props.form.validateFields(async (err, values) => {
+    this.props.form.validateFields((err, values) => {
       // loading = true;
       if (!err) {
         const {username, password} = values
-        let results = await reqLogin(username, password)
-        const result = results.data
-        setTimeout(() => {
-          if (results.status === 200 && result.status === 0) {
-            message.success('登录成功')
-            memoryUtils.user = result.data
-            // 存储用户名到storage中
-            storageUtils.saveUser(result.data)
-            //跳到管理界面
-            loading = false
-            this.setState({loading})
-            this.props.history.replace('/')
-          } else {
-            loading = false
-            this.setState({loading})
-            message.error(result.msg)
-          }
-        }, 1000)
+        this.props.login(username, password)
+        // let results = await reqLogin(username, password)
+        // const result = results.data
+        // if (results.status === 200 && result.status === 0) {
+        //   message.success('登录成功')
+        //   memoryUtils.user = result.data
+        //   // 存储用户名到storage中
+        //   storageUtils.saveUser(result.data)
+        //   //跳到管理界面
+        //   loading = false
+          this.setState({loading:false})
+        //   this.props.history.replace('/')
+        // } else {
+        //   loading = false
+        //   this.setState({loading})
+        //   message.error(result.msg)
+        // }
       } else {
         loading = false
         this.setState({loading})
@@ -94,71 +95,73 @@ class Login extends Component {
       cb()
     }
   }
-
+  
   render() {
-    const user = memoryUtils.user
+    const user = this.props.user
     if (user && user._id) {
       return <Redirect to='/'/>
     }
+    const errMsg = this.props.user.errorMsg
     //得到具强大对象的form
     const form = this.props.form
     const {getFieldDecorator} = form
-
+    
     return (
-        <div className="login">
-          <header className="login-header">
-            <div className="logo">
-              <img src={logo} alt="logo" width="150" height="150"/>
-              <span className="logo-title">Dino development</span>
-            </div>
-          </header>
-          <section className="login-content">
-            <h1 className="login-name">迪诺后台登陆</h1>
-            <Form onSubmit={this.handleSubmit} className="login-form"
-                  autoComplete="off">
-              <Item hasFeedback>
-                {getFieldDecorator('username', {
-                  rules: [
-                    {required: true, whitespace: true, message: '此项不能为空!'},
-                    {min: 4, message: '必须大于等于 4 位'},
-                    {max: 11, message: '必须小于等于 12 位'},
-                    {pattern: /^[a-zA-Z0-9]+$/, message: '必须是英文、数字组成'},
-                  ],
-                })(
-                    <Input
-                        size={'large'}
-                        prefix={<Icon type="user"
-                                      style={{color: 'rgba(0,0,0,.25)'}}/>}
-                        placeholder="管理员帐号"
-                    />,
-                )}
-              </Item>
-              <Item hasFeedback>
-                {getFieldDecorator('password', {
-                  rules: [
-                    {validator: this.validatePwd},
-                  ],
-                })(
-                    <Input
-                        size={'large'}
-                        prefix={<Icon type="lock"
-                                      style={{color: 'rgba(0,0,0,.25)'}}/>}
-                        type="password"
-                        placeholder="密码"
-                    />,
-                )}
-              </Item>
-              <Item>
-                <Spin spinning={this.state.loading}>
-                  <Button type="primary" htmlType="submit"
-                          className="login-form-button">
-                    立即登陆
-                  </Button>
-                </Spin>
-              </Item>
-            </Form>
-          </section>
-        </div>
+      <div className="login">
+        <header className="login-header">
+          <div className="logo">
+            <img src={logo} alt="logo" width="150" height="150"/>
+            <span className="logo-title">Dino development</span>
+          </div>
+        </header>
+        <section className="login-content">
+          <div>{errMsg}</div>
+          <h1 className="login-name">迪诺后台登陆</h1>
+          <Form onSubmit={this.handleSubmit} className="login-form"
+                autoComplete="off">
+            <Item hasFeedback>
+              {getFieldDecorator('username', {
+                rules: [
+                  {required: true, whitespace: true, message: '此项不能为空!'},
+                  {min: 4, message: '必须大于等于 4 位'},
+                  {max: 11, message: '必须小于等于 12 位'},
+                  {pattern: /^[a-zA-Z0-9]+$/, message: '必须是英文、数字组成'},
+                ],
+              })(
+                <Input
+                  size={'large'}
+                  prefix={<Icon type="user"
+                                style={{color: 'rgba(0,0,0,.25)'}}/>}
+                  placeholder="管理员帐号"
+                />,
+              )}
+            </Item>
+            <Item hasFeedback>
+              {getFieldDecorator('password', {
+                rules: [
+                  {validator: this.validatePwd},
+                ],
+              })(
+                <Input
+                  size={'large'}
+                  prefix={<Icon type="lock"
+                                style={{color: 'rgba(0,0,0,.25)'}}/>}
+                  type="password"
+                  placeholder="密码"
+                />,
+              )}
+            </Item>
+            <Item>
+              <Spin spinning={this.state.loading}>
+                <Button type="primary" htmlType="submit"
+                        className="login-form-button">
+                  立即登陆
+                </Button>
+              </Spin>
+            </Item>
+          </Form>
+        </section>
+      </div>
     )
   }
 }
@@ -181,8 +184,13 @@ class Login extends Component {
 * */
 const WrapLogin = Form.create()(Login)
 
-export default WrapLogin
+export default connect(
+  state => ({user: state.user}),
+  {login},
+)(WrapLogin)
 
-/*前台表单验证
-* 收集表单输入的数据
-* */
+/**
+ *
+ 前台表单验证
+ 收集表单输入的数据
+ **/

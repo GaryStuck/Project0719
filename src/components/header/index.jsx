@@ -6,10 +6,11 @@ import { reqWeather } from '../../api'
 import { withRouter } from 'react-router-dom'
 import { formateDate } from '../../utils/dateUtils'
 import './index.less'
-import memoryUtils from '../../utils/memoryUtils'
+// import memoryUtils from '../../utils/memoryUtils'
 import menuList from '../../config/menuConfig'
-import storageUtils from '../../utils/storageUtils'
+// import storageUtils from '../../utils/storageUtils'
 import {connect} from 'react-redux'
+import { logout } from '../../redux/actions'
 
 class Index extends Component {
   constructor(props) {
@@ -31,10 +32,11 @@ class Index extends Component {
       cancelText: '取消',
       onOk: () => {
         console.log('OK')
-        storageUtils.removeUser(memoryUtils.user)
-        memoryUtils.user = {}
+        this.props.logout()
+        // storageUtils.removeUser(this.props.user)
+        // this.props.user = storageUtils.getUser()
         //跳转到登陆页面
-        this.props.history.replace('/login')
+        // this.props.history.replace('/login')
       },
       onCancel: () => {
       },
@@ -81,7 +83,7 @@ class Index extends Component {
   
   render() {
     const {currentTime, dayPictureUrl, weather} = this.state
-    const username = memoryUtils.user.username
+    const username = this.props.user.username
     // this.getTitle()
     const titles = this.props.headTitle
     return (
@@ -110,6 +112,6 @@ class Index extends Component {
 }
 
 export default connect(
-  state => ({headTitle:state.headTitle}),
-  {}
+  state => ({headTitle:state.headTitle,user:state.user}),
+  {logout}
 )(withRouter(Index))

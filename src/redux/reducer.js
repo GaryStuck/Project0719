@@ -6,7 +6,10 @@
 import storageUtils from '../utils/storageUtils'
 import { combineReducers } from 'redux'
 import {
-  SET_HEAD_TITLE
+  SET_HEAD_TITLE,
+  RECEIVE_USER,
+  SHOW_ERROR_MSG,
+  RESET_USER
 } from './action-types'
 
 /*用来管理头部标题的状态*/
@@ -25,8 +28,15 @@ function headTitle(state = initHeadTitle, action) {
 const initUser = storageUtils.getUser()
 
 function user(state = initUser, action) {
-  console.log(('state'),state,('action'),action)
+  console.log(('state'), state, ('action'), action)
   switch (action.type) {
+    case RECEIVE_USER:
+      return action.user
+    case SHOW_ERROR_MSG:
+      const errorMsg = action.msg
+      return {...state,errorMsg}
+    case RESET_USER:
+      return {}
     default:
       return state
   }

@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
 import { Button, Table, Card, Modal, message } from 'antd'
+import { connect } from 'react-redux'
+
 import { PAGE_SIZE } from '../../utils/constants'
 import { reqRoles, reqAddRole, reqUpdateRole } from '../../api'
 import AddForm from './add-form'
 import AuthForm from './auth-form'
-import memoryUtils from '../../utils/memoryUtils'
 import { formateDate } from '../../utils/dateUtils'
+import { logout } from '../../redux/actions'
 
 class Role extends Component {
   
@@ -26,8 +28,8 @@ class Role extends Component {
     const role = this.state.role
     //取到最新的menus
     role.menus = this.auth.current.getMenus()
-    role.auth_name = memoryUtils.user.username
-    role.auth_time = Date.now();
+    role.auth_name = this.props.user.username
+    role.auth_time = Date.now()
     //发送请求
     const {data: {data, status}} = await reqUpdateRole(role)
     //反馈结果
@@ -54,7 +56,7 @@ class Role extends Component {
           // const roles = [...this.state.roles]
           // roles.push(role)
           // this.setState({roles})
-          this.getRoles();
+          this.getRoles()
         } else {
           message.error('添加角色失败')
         }
@@ -73,12 +75,12 @@ class Role extends Component {
         key: '1',
         title: '创建时间',
         dataIndex: 'create_time',
-        render: (create_time) => formateDate(create_time)
+        render: (create_time) => formateDate(create_time),
       }, {
         key: '2',
         title: '授权时间',
         dataIndex: 'auth_time',
-        render: formateDate
+        render: formateDate,
       }, {
         key: '3',
         title: '授权人',
@@ -168,4 +170,7 @@ class Role extends Component {
   }
 }
 
-export default Role
+export default connect(
+  state => ({user: state.user}),
+  {logout},
+)(Role)

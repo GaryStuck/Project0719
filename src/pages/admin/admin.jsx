@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom'
-import memoryUtils from '../../utils/memoryUtils'
+// import memoryUtils from '../../utils/memoryUtils'
 import { Layout } from 'antd'
 import LeftNav from '../../components/left-nav/left-nav'
 import Header from '../../components/header'
+import {connect} from 'react-redux'
 
 /**@implements:路由组件**/
 import Home from '../home/home'
@@ -21,7 +22,7 @@ const {Footer, Sider, Content} = Layout;
 class Admin extends Component {
 
 	render() {
-		const user = memoryUtils.user;
+		const user = this.props.user;
 		// 未登录跳转到登录界面
 		if (!user._id || !user) {
 			return <Redirect to='/login'/>
@@ -57,4 +58,7 @@ class Admin extends Component {
 
 Admin.propTypes = {};
 
-export default Admin;
+export default connect(
+  state=>({user:state.user}),
+  {}
+)(Admin);
